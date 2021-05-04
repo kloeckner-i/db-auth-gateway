@@ -1,0 +1,20 @@
+version: "3.6"
+
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+  mock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - mock
+      - --db-address=postgres:5432
+      - --instance=my-project:my-region:my-database
+    ports:
+      - "127.0.0.1:3307:3307"
+      - "127.0.0.1:8080:8080"
