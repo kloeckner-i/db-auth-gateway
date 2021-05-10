@@ -1,13 +1,6 @@
 FROM golang:1.15.0-alpine AS builder
 
-RUN apk add --update --no-cache curl make git
-
-RUN go get mvdan.cc/gofumpt \
-  && go get github.com/daixiang0/gci \
-  && go get golang.org/x/lint/golint
-
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.30.0
-
+RUN apk add --update --no-cache make
 WORKDIR /build
 
 COPY . /build/
