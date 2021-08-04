@@ -69,7 +69,6 @@ PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -d postgres postgres
 * GNU Make
 * [golangci-lint v1.30+](https://golangci-lint.run/usage/install/)
 * Additional Go tools:
-    * [golint](https://github.com/golang/lint)
     * [gofumpt](https://github.com/mvdan/gofumpt)
     * [gofumports](https://github.com/mvdan/gofumpt)
     * [gci](https://github.com/daixiang0/gci)

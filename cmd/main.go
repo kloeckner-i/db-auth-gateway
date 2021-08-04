@@ -18,7 +18,6 @@ package main
 
 import (
 	"context"
-	"crypto/x509/pkix"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,8 +27,6 @@ import (
 	pkg "github.com/kloeckner-i/db-auth-gateway/internal"
 	"github.com/kloeckner-i/db-auth-gateway/internal/api"
 	"github.com/kloeckner-i/db-auth-gateway/internal/config"
-	"github.com/kloeckner-i/db-auth-gateway/internal/mock"
-	"github.com/kloeckner-i/db-auth-gateway/internal/pubkey"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -83,32 +80,7 @@ func execute() error {
 		return err
 	}
 
-	mockCmd := &cobra.Command{
-		Use:   "mock",
-		Short: "Run a local Google managed database mock (for testing)",
-		RunE:  startMock,
-	}
-
-	mockCmd.Flags().String("instance", "", "Fully qualified database instance to connect to (project:region:name)")
-	mockCmd.Flags().String("db-address", "", "Address of the database for which to proxy")
-	mockCmd.Flags().Int("api-port", 8080, "Port on which to serve the mocked sqladmin API")
-	mockCmd.Flags().Int("proxy-port", 3307, "Port on which to serve the database proxy")
-
-	if err := mockCmd.MarkFlagRequired("instance"); err != nil {
-		return err
-	}
-
-	if err := mockCmd.MarkFlagRequired("db-address"); err != nil {
-		return err
-	}
-
-	rootCmd.AddCommand(mockCmd)
-
-	if err := rootCmd.Execute(); err != nil {
-		return err
-	}
-
-	return nil
+	return rootCmd.Execute()
 }
 
 func startGateway(cmd *cobra.Command, args []string) error {
@@ -205,55 +177,4 @@ func startGateway(cmd *cobra.Command, args []string) error {
 	}
 
 	return gateway.Run(ctx)
-}
-
-func startMock(cmd *cobra.Command, args []string) error {
-	instance, err := cmd.Flags().GetString("instance")
-	if err != nil {
-		return err
-	}
-
-	dbAddress, err := cmd.Flags().GetString("db-address")
-	if err != nil {
-		return err
-	}
-
-	apiPort, err := cmd.Flags().GetInt("api-port")
-	if err != nil {
-		return err
-	}
-
-	proxyPort, err := cmd.Flags().GetInt("proxy-port")
-	if err != nil {
-		return err
-	}
-
-	authority, err := pubkey.NewAuthority(pkix.Name{
-		CommonName: "Mock CA",
-	}, time.Hour)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	dbProxy, err := mock.NewDatabaseProxy(authority, proxyPort, instance, dbAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	sqlAdminAPI, err := mock.NewSQLAdminAPI(dbProxy, authority, apiPort)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	go func() {
-		if err := dbProxy.Run(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	if err := sqlAdminAPI.Run(); err != nil {
-		log.Fatal(err)
-	}
-
-	return nil
 }

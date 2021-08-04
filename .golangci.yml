@@ -6,6 +6,9 @@ linters-settings:
     statements: 50
   nestif:
     min-complexity: 10
+  cyclop:
+    max-complexity: 20
+
 
 issues:
   exclude-rules:
