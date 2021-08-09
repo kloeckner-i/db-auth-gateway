@@ -69,7 +69,7 @@ func NewClientFromCredentialFile(ctx context.Context, credentialFile, apiEndpoin
 	}
 
 	if credentialFile == DisabledCredentialFile {
-		opts = append(opts, option.WithHTTPClient(oauth2.NewClient(ctx, &disabledTokenSource{})))
+		opts = append(opts, option.WithHTTPClient(oauth2.NewClient(ctx, &DisabledTokenSource{})))
 	} else if cfg, err := goauth.JWTConfigFromJSON(credentialJSON, sqladmin.SqlserviceAdminScope); err == nil {
 		opts = append(opts, option.WithHTTPClient(cfg.Client(ctx)))
 	} else {
@@ -133,11 +133,11 @@ func (c *Client) CreateClientCertificate(instance string, pubKey crypto.PublicKe
 	return req.Do()
 }
 
-// disabledTokenSource is a mocked oauth token source for local testing.
-type disabledTokenSource struct{}
+// DisabledTokenSource is a mocked oauth token source for local testing.
+type DisabledTokenSource struct{}
 
 // Token issues a mocked bearer token for local testing.
-func (ts *disabledTokenSource) Token() (*oauth2.Token, error) {
+func (ts *DisabledTokenSource) Token() (*oauth2.Token, error) {
 	return &oauth2.Token{
 		AccessToken:  "let-me-in-pls",
 		TokenType:    "Bearer",

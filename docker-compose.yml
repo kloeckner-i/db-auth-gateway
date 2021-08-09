@@ -8,13 +8,11 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
 
   mock:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command:
-      - mock
-      - --db-address=postgres:5432
-      - --instance=my-project:my-region:my-database
+    image: ghcr.io/kloeckner-i/cloudish-sql:v1.0.0
     ports:
-      - "127.0.0.1:3307:3307"
       - "127.0.0.1:8080:8080"
+      - "127.0.0.1:3307:3307"
+    environment:
+      LOG_LEVEL: "DEBUG"
+    command:
+      - --db-address=postgres:5432

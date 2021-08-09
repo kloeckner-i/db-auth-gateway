@@ -119,7 +119,8 @@ func (c *Gateway) Run(ctx context.Context) error {
 		conn, err := listener.AcceptTCP()
 		if err != nil {
 			// Ignore the deadline messages.
-			if opErr, ok := err.(*net.OpError); ok && opErr.Timeout() {
+			var opErr *net.OpError
+			if errors.As(err, &opErr) && opErr.Timeout() {
 				continue
 			}
 

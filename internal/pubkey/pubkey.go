@@ -26,6 +26,7 @@ import (
 	"fmt"
 
 	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	log "github.com/sirupsen/logrus"
 )
 
 import "crypto/md5" // #nosec
@@ -65,6 +66,11 @@ func NewServerCertificateValidator(rootCAs *x509.CertPool, instance string) func
 
 		projectName := fmt.Sprintf("%s:%s", parsedInstance["project"], parsedInstance["name"])
 		if cert.Subject.CommonName != projectName {
+			log.WithFields(log.Fields{
+				"certificateCommonName": cert.Subject.CommonName,
+				"expectedCommonName":    projectName,
+			}).Warn("Certificate common name mismatch")
+
 			return ErrCommonNameMismatch
 		}
 

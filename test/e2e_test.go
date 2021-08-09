@@ -19,6 +19,7 @@ package test
  */
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -31,9 +32,13 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/kloeckner-i/db-auth-gateway/internal/api"
 	"github.com/kloeckner-i/db-auth-gateway/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/oauth2"
+	"google.golang.org/api/option"
+	sqladmin "google.golang.org/api/sqladmin/v1beta4"
 )
 
 const (
@@ -43,6 +48,25 @@ const (
 )
 
 func TestMain(m *testing.M) {
+	ctx := context.Background()
+
+	opts := []option.ClientOption{
+		option.WithEndpoint("http://localhost:8080"),
+		option.WithHTTPClient(oauth2.NewClient(ctx, &api.DisabledTokenSource{})),
+	}
+
+	sqladminService, err := sqladmin.NewService(ctx, opts...)
+	if err != nil {
+		log.Fatal("error occurs during getting sqladminService", err)
+	}
+
+	_, err = sqladminService.Instances.Insert("my-project", &sqladmin.DatabaseInstance{
+		Name: "my-region~my-database",
+	}).Do()
+	if err != nil {
+		log.Fatal("error occurs during getting sqladminService", err)
+	}
+
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)

@@ -17,7 +17,7 @@ jobs:
       - name: Check Code Style
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.30.0
+          version: v1.40.1
 
   build:
     runs-on: ubuntu-latest
@@ -51,6 +51,12 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
@@ -60,14 +66,14 @@ jobs:
         run: docker load --input /tmp/db-auth-gateway.tar
       - name: Start Google Cloud SQL Mock and Dependencies
         run: |
-          docker network create db-auth-gateway-test
-          docker run -d --network=db-auth-gateway-test --network-alias=postgres --name=postgres -e "POSTGRES_PASSWORD=mysecretpassword" postgres:13
-          docker run -d --network=db-auth-gateway-test --name=cloudsql_mock -p 127.0.0.1:3307:3307 -p 127.0.0.1:8080:8080 kloeckner-i/db-auth-gateway:${{ github.sha }} mock --db-address=postgres:5432 --instance=my-project:my-region:my-database
+          make start_mock
       - name: Test
         env:
           MOCK_ADDRESS: 127.0.0.1
         run: |
-          make test e2e
+          # Separated to ensure the reset_mock target is executed between stages.
+          make test
+          make e2e
       - name: Upload Test Logs
         uses: actions/upload-artifact@v2
         if: failure()

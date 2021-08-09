@@ -4,7 +4,6 @@ go 1.15
 
 require (
 	cloud.google.com/go v0.78.0 // indirect
-	github.com/gorilla/mux v1.8.0
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jackc/pgx/v4 v4.11.0
 	github.com/magefile/mage v1.11.0 // indirect
