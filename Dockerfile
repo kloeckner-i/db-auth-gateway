@@ -1,4 +1,4 @@
-FROM golang:1.15.0-alpine AS builder
+FROM golang:1.17.4-alpine AS builder
 
 RUN apk add --update --no-cache make
 WORKDIR /build
@@ -7,7 +7,7 @@ COPY . /build/
 
 RUN make
 
-FROM alpine:3.12.0
+FROM alpine:3.15.0
 
 COPY --from=builder /build/target/db-auth-gateway /usr/local/bin/db-auth-gateway
 COPY --from=builder /build/LICENSE /LICENSE
