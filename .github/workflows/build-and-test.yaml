@@ -17,7 +17,7 @@ jobs:
       - name: Check Code Style
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.40.1
+          version: v1.43.0
 
   build:
     runs-on: ubuntu-latest
