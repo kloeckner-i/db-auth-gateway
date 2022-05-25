@@ -4,11 +4,6 @@ on:
 
 env:
   product_name: db-auth-proxy
-  version: 1.0.0
-
-defaults:
-  run:
-    shell: bash
 
 jobs:
   build:
@@ -21,10 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+  
       - name: Setup go
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
+      
       - name: Compile Binary
         env:
           GOOS: ${{ matrix.goos }}
@@ -43,13 +40,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and export
+      - name: Build and push the docker image
         uses: docker/build-push-action@v3
         with:
           push: true
           context: .
           platforms: ${{ matrix.goos }}/${{ matrix.dockerArch }}
           tags: ghcr.io/allanger/db-auth-proxy:latest-${{ matrix.goarch }}
+
   push:
     runs-on: ubuntu-latest
     needs: build
@@ -64,14 +62,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Load image
+      - name: Prepare the docker manifest
         run: |
             docker manifest create ghcr.io/allanger/db-auth-proxy:vlatest \
               --amend ghcr.io/allanger/db-auth-proxy:latest-amd64 \
               --amend ghcr.io/allanger/db-auth-proxy:latest-arm64
-      - name: Load image
+
+      - name: Push the docker manifest 
         run: |
           docker manifest push ghcr.io/allanger/db-auth-proxy:vlatest
-      - name: Load image
-        run: |
-          docker inspect ghcr.io/allanger/db-auth-proxy:latest
+      
