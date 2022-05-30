@@ -37,8 +37,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: kloeckner-i/db-auth-gateway:${{ github.sha }}
-          outputs: type=docker,dest=/tmp/db-auth-gateway.tar
+          push: false
+          tags: ghcr.io/allanger/db-auth-proxy:test
 
       - name: check image
         run: docker image ls
