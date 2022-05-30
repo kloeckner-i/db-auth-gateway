@@ -1,4 +1,4 @@
-name: example
+name: Publish Image
 on:
   push:
 
