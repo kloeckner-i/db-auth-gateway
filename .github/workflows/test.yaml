@@ -41,7 +41,7 @@ jobs:
           outputs: type=docker,dest=/tmp/db-auth-gateway.tar
 
       - name: check image
-        run: docker images
+        run: docker image ls
   test:
     runs-on: ubuntu-latest
     needs: build
