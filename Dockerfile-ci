@@ -6,7 +6,8 @@ ENV USER_NAME=db-operator
 
 ARG var_name
 COPY ./db-operator /usr/local/bin/db-operator
-COPY ./build/bin /usr/local/bin
+COPY ./LICENSE /LICENSE
+
 RUN /usr/local/bin/user_setup
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
