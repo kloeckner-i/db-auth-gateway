@@ -5,8 +5,8 @@ on:
     types: [published, edited]
 
 env:
-  dockerhub_user: allanger
-  manufacturer: allanger
+  dockerhub_user: kloeckneri
+  manufacturer: kloeckner-i
   product_name: db-auth-gateway
   main_go_path: ./cmd
 
