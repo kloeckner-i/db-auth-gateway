@@ -1,7 +1,8 @@
 name: Docker build and push
 
 on:
-  push:
+  release:
+    types: [published, edited]
 
 env:
   dockerhub_user: allanger
@@ -65,9 +66,9 @@ jobs:
           platforms: ${{ matrix.goos }}/${{ matrix.dockerArch }}
           tags: |
             ${{ env.dockerhub_user }}/${{ env.product_name }}:latest-${{ matrix.goarch }}
-            ${{ env.dockerhub_user }}/${{ env.product_name }}:v1.0.3-${{ matrix.goarch }}
+            ${{ env.dockerhub_user }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-${{ matrix.goarch }}
             ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:latest-${{ matrix.goarch }}
-            ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:v1.0.3-${{ matrix.goarch }}
+            ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-${{ matrix.goarch }}
           labels: |
             action_link=${{ env.LINK }}
             actor=${{ github.actor }}
@@ -90,9 +91,9 @@ jobs:
 
       - name: Create a docker manifest for a versioned container
         run: |
-          docker manifest create ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:v1.0.3 \
-            --amend ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:v1.0.3-amd64 \
-            --amend ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:v1.0.3-arm64
+          docker manifest create ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:${{ github.event.release.tag_name }} \
+            --amend ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-amd64 \
+            --amend ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-arm64
 
       - name: Create a manifest for a latest container
         run: |
@@ -102,7 +103,7 @@ jobs:
 
       - name: Push the manifest
         run: |
-          docker manifest push ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:v1.0.3
+          docker manifest push ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:${{ github.event.release.tag_name }}
           docker manifest push ghcr.io/${{ env.manufacturer }}/${{ env.product_name }}:latest 
 
   push_to_dockerhub:
@@ -120,9 +121,9 @@ jobs:
 
       - name: Create a docker manifest for a versioned container
         run: |
-          docker manifest create ${{ env.dockerhub_user }}/${{ env.product_name }}:v1.0.3 \
-            --amend ${{ env.dockerhub_user }}/${{ env.product_name }}:v1.0.3-amd64 \
-            --amend ${{ env.dockerhub_user }}/${{ env.product_name }}:v1.0.3-arm64
+          docker manifest create ${{ env.dockerhub_user }}/${{ env.product_name }}:${{ github.event.release.tag_name }} \
+            --amend ${{ env.dockerhub_user }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-amd64 \
+            --amend ${{ env.dockerhub_user }}/${{ env.product_name }}:${{ github.event.release.tag_name }}-arm64
 
       - name: Create a manifest for a latest container
         run: |
@@ -132,5 +133,5 @@ jobs:
 
       - name: Push the manifest
         run: |
-          docker manifest push ${{ env.dockerhub_user }}/${{ env.product_name }}:v1.0.3
+          docker manifest push ${{ env.dockerhub_user }}/${{ env.product_name }}:${{ github.event.release.tag_name }}
           docker manifest push ${{ env.dockerhub_user }}/${{ env.product_name }}:latest 
