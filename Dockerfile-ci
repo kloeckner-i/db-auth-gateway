@@ -2,8 +2,8 @@
 FROM alpine:3.15.0
 LABEL maintainer="dev@kloeckner-i.com"
 
-COPY --from=builder /build/target/db-auth-gateway /usr/local/bin/db-auth-gateway
-COPY --from=builder /build/LICENSE /LICENSE
+COPY ./db-auth-gateway /usr/local/bin/db-auth-gateway
+COPY ./LICENSE /LICENSE
 
 RUN addgroup -g 65532 -S gateway \
   && adduser -u 65532 -S gateway -G gateway
