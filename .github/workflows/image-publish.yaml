@@ -7,7 +7,7 @@ env:
   dockerhub_user: allanger
   manufacturer: allanger
   product_name: db-auth-gateway
-  main_go_path: .
+  main_go_path: ./cmd
 
 jobs:
   build:
