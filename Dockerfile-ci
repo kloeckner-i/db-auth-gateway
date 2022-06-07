@@ -1,0 +1,12 @@
+FROM alpine:3.15.0
+LABEL maintainer="dev@kloeckner-i.com"
+
+COPY ./db-auth-gateway /usr/local/bin/db-auth-gateway
+COPY ./LICENSE /LICENSE
+
+RUN addgroup -g 65532 -S gateway \
+  && adduser -u 65532 -S gateway -G gateway
+
+USER 65532
+
+ENTRYPOINT [ "/usr/local/bin/db-auth-gateway" ]
