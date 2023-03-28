@@ -25,7 +25,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	log "github.com/sirupsen/logrus"
 )
 

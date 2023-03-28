@@ -24,9 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/api"
-	"github.com/kloeckner-i/db-auth-gateway/internal/config"
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/api"
+	"github.com/db-operator/db-auth-gateway/internal/config"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"

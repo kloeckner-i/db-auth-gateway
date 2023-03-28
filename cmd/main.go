@@ -24,9 +24,9 @@ import (
 	"syscall"
 	"time"
 
-	pkg "github.com/kloeckner-i/db-auth-gateway/internal"
-	"github.com/kloeckner-i/db-auth-gateway/internal/api"
-	"github.com/kloeckner-i/db-auth-gateway/internal/config"
+	pkg "github.com/db-operator/db-auth-gateway/internal"
+	"github.com/db-operator/db-auth-gateway/internal/api"
+	"github.com/db-operator/db-auth-gateway/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

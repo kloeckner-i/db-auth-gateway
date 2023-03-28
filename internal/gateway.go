@@ -29,9 +29,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/config"
-	"github.com/kloeckner-i/db-auth-gateway/internal/pubkey"
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/config"
+	"github.com/db-operator/db-auth-gateway/internal/pubkey"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"

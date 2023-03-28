@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/pubkey"
+	"github.com/db-operator/db-auth-gateway/internal/pubkey"
 	"github.com/stretchr/testify/assert"
 )
 

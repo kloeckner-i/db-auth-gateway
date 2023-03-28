@@ -32,8 +32,8 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
-	"github.com/kloeckner-i/db-auth-gateway/internal/api"
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/api"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"

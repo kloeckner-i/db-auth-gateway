@@ -1,4 +1,4 @@
-module github.com/kloeckner-i/db-auth-gateway
+module github.com/db-operator/db-auth-gateway
 
 go 1.18
 

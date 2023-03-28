@@ -27,7 +27,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	"golang.org/x/oauth2"
 	goauth "golang.org/x/oauth2/google"
 	"google.golang.org/api/option"

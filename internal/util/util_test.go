@@ -19,7 +19,7 @@ package util_test
 import (
 	"testing"
 
-	"github.com/kloeckner-i/db-auth-gateway/internal/util"
+	"github.com/db-operator/db-auth-gateway/internal/util"
 	"github.com/stretchr/testify/assert"
 )
 
