@@ -25,7 +25,6 @@ import (
 	"crypto/x509"
 	"errors"
 	mrand "math/rand"
-	"os"
 	"sync"
 	"time"
 
@@ -82,7 +81,8 @@ type GCloudProvider struct {
 // NewConfigProvider constructs a new configuration provider from an API client and instance.
 func NewConfigProvider(ctx context.Context,
 	apiClient *api.Client, instance string,
-	minRefreshInterval, periodicRefreshInterval time.Duration) (Provider, error) {
+	minRefreshInterval, periodicRefreshInterval time.Duration,
+) (Provider, error) {
 	log.Info("Generating RSA key pair for encrypting connections")
 
 	// Generate a new RSA key pair which will be used for our client certificates
@@ -99,10 +99,6 @@ func NewConfigProvider(ctx context.Context,
 		periodicRefreshInterval: periodicRefreshInterval,
 		keyPair:                 keyPair,
 	}
-
-	// If not uniquely seeded the math random sequence will be the same for every instance,
-	// this is obviously what we are trying to avoid.
-	mrand.Seed(time.Now().UTC().UnixNano() ^ int64(os.Getpid()))
 
 	// Periodically refresh the ephemeral client certificate.
 	go configProvider.periodicRefreshTask()

@@ -1,18 +1,22 @@
-FROM golang:1.17.4-alpine AS builder
+FROM golang:1.26.5-alpine3.24 AS builder
 
-RUN apk add --update --no-cache make
+RUN apk update --no-cache \
+  && apk upgrade --no-cache \
+  && apk add --no-cache make
 WORKDIR /build
 
 COPY . /build/
 
 RUN make
 
-FROM alpine:3.15.0
+FROM alpine:3.24.1
 
 COPY --from=builder /build/target/db-auth-gateway /usr/local/bin/db-auth-gateway
 COPY --from=builder /build/LICENSE /LICENSE
 
-RUN addgroup -g 65532 -S gateway \
+RUN apk update --no-cache \
+  && apk upgrade --no-cache \
+  && addgroup -g 65532 -S gateway \
   && adduser -u 65532 -S gateway -G gateway
 
 USER 65532

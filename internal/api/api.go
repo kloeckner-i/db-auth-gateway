@@ -21,15 +21,15 @@ import (
 	"context"
 	"crypto"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/kloeckner-i/db-auth-gateway/internal/util"
 	"golang.org/x/oauth2"
-	goauth "golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 	sqladmin "google.golang.org/api/sqladmin/v1beta4"
 )
@@ -42,6 +42,9 @@ const DisabledCredentialFile = "DISABLED"
 // with an incompatible database version.
 var ErrUnsupportedDatabaseVersion = errors.New("unsupported database version")
 
+// ErrEmptyCredential is returned when the credential JSON is empty.
+var ErrEmptyCredential = errors.New("credential provided is 0 bytes")
+
 // Client is an instance of the cloud database api client for use with Google Cloud.
 type Client struct {
 	sqladminService *sqladmin.Service
@@ -49,17 +52,6 @@ type Client struct {
 
 // NewClientFromCredentialFile constructs a new Google Cloud API client from the supplied JSON credential file.
 func NewClientFromCredentialFile(ctx context.Context, credentialFile, apiEndpoint string) (*Client, error) {
-	var credentialJSON []byte
-
-	if credentialFile != DisabledCredentialFile {
-		var err error
-
-		credentialJSON, err = ioutil.ReadFile(credentialFile)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	opts := []option.ClientOption{
 		option.WithScopes(sqladmin.SqlserviceAdminScope),
 	}
@@ -70,15 +62,18 @@ func NewClientFromCredentialFile(ctx context.Context, credentialFile, apiEndpoin
 
 	if credentialFile == DisabledCredentialFile {
 		opts = append(opts, option.WithHTTPClient(oauth2.NewClient(ctx, &DisabledTokenSource{})))
-	} else if cfg, err := goauth.JWTConfigFromJSON(credentialJSON, sqladmin.SqlserviceAdminScope); err == nil {
-		opts = append(opts, option.WithHTTPClient(cfg.Client(ctx)))
 	} else {
-		cred, err := goauth.CredentialsFromJSON(ctx, credentialJSON, sqladmin.SqlserviceAdminScope)
+		credJSON, err := os.ReadFile(credentialFile)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to read credential file: %w", err)
 		}
 
-		opts = append(opts, option.WithHTTPClient(oauth2.NewClient(ctx, cred.TokenSource)))
+		credType, err := getCredentialType(credJSON)
+		if err != nil {
+			return nil, fmt.Errorf("failed to determine credential type: %w", err)
+		}
+
+		opts = append(opts, option.WithAuthCredentialsFile(credType, credentialFile))
 	}
 
 	sqladminService, err := sqladmin.NewService(ctx, opts...)
@@ -131,6 +126,23 @@ func (c *Client) CreateClientCertificate(instance string, pubKey crypto.PublicKe
 	)
 
 	return req.Do()
+}
+
+// getCredentialType parses the credential JSON to determine the type.
+func getCredentialType(data []byte) (option.CredentialsType, error) {
+	if len(data) == 0 {
+		return option.CredentialsType(""), ErrEmptyCredential
+	}
+
+	var cred struct {
+		Type string `json:"type"`
+	}
+
+	if err := json.Unmarshal(data, &cred); err != nil {
+		return option.CredentialsType(""), err
+	}
+
+	return option.CredentialsType(cred.Type), nil
 }
 
 // DisabledTokenSource is a mocked oauth token source for local testing.

@@ -1,17 +1,50 @@
-linters-settings:
-  gocognit:
-    min-complexity: 50
-  funlen:
-    lines: 150
-    statements: 50
-  nestif:
-    min-complexity: 10
-  cyclop:
-    max-complexity: 20
-
-
-issues:
-  exclude-rules:
-    - path: internal/pubkey/pubkey.go
-      linters:
-        - goimports
+version: "2"
+linters:
+  default: all
+  disable:
+    - gochecknoglobals
+    - wrapcheck
+    - paralleltest
+    - wsl
+    - gomodguard
+    - containedctx
+    - contextcheck
+    - depguard
+    - exhaustruct
+    - goconst
+    - gosec
+    - ireturn
+    - mnd
+    - modernize
+    - noinlineerr
+    - revive
+    - varnamelen
+  settings:
+    cyclop:
+      max-complexity: 20
+    funlen:
+      lines: 150
+      statements: 50
+    gocognit:
+      min-complexity: 50
+    nestif:
+      min-complexity: 10
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - internal/pubkey/pubkey.go
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

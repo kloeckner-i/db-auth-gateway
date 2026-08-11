@@ -19,6 +19,7 @@ package pubkey
 
 import (
 	"bytes"
+	"crypto/md5" // #nosec
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
@@ -29,7 +30,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-import "crypto/md5" // #nosec
+// #nosec
 
 var (
 	// ErrCommonNameMismatch is returned when the server certificate common name does not match our database.

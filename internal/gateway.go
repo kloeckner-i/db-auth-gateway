@@ -177,7 +177,8 @@ func (c *Gateway) Run(ctx context.Context) error {
 }
 
 func (c *Gateway) handleClientConnection(ctx context.Context,
-	clientConn *util.CancellableConnection, clientAddress string) error {
+	clientConn *util.CancellableConnection, clientAddress string,
+) error {
 	defer func() {
 		log.WithFields(log.Fields{
 			"clientAddress": clientAddress,
@@ -211,7 +212,8 @@ func (c *Gateway) handleClientConnection(ctx context.Context,
 }
 
 func (c *Gateway) proxyConnection(
-	ctx context.Context, clientConn net.Conn, clientAddress string) error {
+	ctx context.Context, clientConn net.Conn, clientAddress string,
+) error {
 	connCtx, connCancel := context.WithCancel(ctx)
 
 	remoteConn, remoteAddress, err := c.connectRemote(connCtx)

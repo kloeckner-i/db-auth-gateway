@@ -56,6 +56,7 @@ func (cc *CancellableConnection) Read(p []byte) (int, error) {
 	performRead := func() {
 		n, err := cc.conn.Read(buf)
 		c <- ioret{n, err}
+
 		close(c)
 	}
 
@@ -81,6 +82,7 @@ func (cc *CancellableConnection) Write(p []byte) (int, error) {
 	go func() {
 		n, err := cc.conn.Write(buf)
 		c <- ioret{n, err}
+
 		close(c)
 	}()
 

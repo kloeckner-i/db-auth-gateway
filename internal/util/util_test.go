@@ -44,5 +44,5 @@ func TestParseMalformedInstance(t *testing.T) {
 
 	_, err := util.ParseInstance(instance)
 
-	assert.NotNil(t, err)
+	assert.Error(t, err)
 }

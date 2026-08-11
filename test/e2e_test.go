@@ -1,3 +1,4 @@
+//go:build e2e
 // +build e2e
 
 package test
@@ -31,7 +32,7 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/kloeckner-i/db-auth-gateway/internal/api"
 	"github.com/kloeckner-i/db-auth-gateway/internal/util"
 	log "github.com/sirupsen/logrus"
