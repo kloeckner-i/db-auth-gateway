@@ -24,7 +24,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/kloeckner-i/db-auth-gateway/internal/util"
@@ -54,7 +54,7 @@ func NewClientFromCredentialFile(ctx context.Context, credentialFile, apiEndpoin
 	if credentialFile != DisabledCredentialFile {
 		var err error
 
-		credentialJSON, err = ioutil.ReadFile(credentialFile)
+		credentialJSON, err = os.ReadFile(credentialFile)
 		if err != nil {
 			return nil, err
 		}

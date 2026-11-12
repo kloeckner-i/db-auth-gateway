@@ -27,7 +27,7 @@ load balancing.
 
 ## Quickstart
 
-Use `docker-compose` to start a local PostgreSQL instance, and Google API mock:
+Use `docker compose` to start a local PostgreSQL instance, and Google API mock:
 
 ```shell script
 make start_mock
@@ -95,7 +95,7 @@ make lint
 
 #### Running the Tests
 
-First start the Google API mock using `docker-compose`:
+First start the Google API mock using `docker compose`:
 
 ```shell script
 make start_mock
