@@ -25,7 +25,6 @@ import (
 	"crypto/x509"
 	"errors"
 	mrand "math/rand"
-	"os"
 	"sync"
 	"time"
 
@@ -99,10 +98,6 @@ func NewConfigProvider(ctx context.Context,
 		periodicRefreshInterval: periodicRefreshInterval,
 		keyPair:                 keyPair,
 	}
-
-	// If not uniquely seeded the math random sequence will be the same for every instance,
-	// this is obviously what we are trying to avoid.
-	mrand.Seed(time.Now().UTC().UnixNano() ^ int64(os.Getpid()))
 
 	// Periodically refresh the ephemeral client certificate.
 	go configProvider.periodicRefreshTask()
